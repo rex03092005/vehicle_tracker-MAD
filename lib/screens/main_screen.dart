@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'dashboard_screen.dart';
 import 'vehicle_list_screen.dart';
 import 'analytics_screen.dart';
-import 'service_centers_screen.dart';
+import 'documents_screen.dart';
+import '../main.dart'; // For theme toggle
 
 class MainScreen extends StatefulWidget {
   @override
@@ -12,26 +14,41 @@ class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
   final List<Widget> _screens = [
+    DashboardScreen(),
     VehicleListScreen(),
     AnalyticsScreen(),
-    ServiceCentersScreen(),
+    DocumentsScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = VehicleTrackerApp.of(context);
+    
     return Scaffold(
+      appBar: AppBar(
+        title: Text("AutoCare Premium"),
+        actions: [
+          IconButton(
+            icon: Icon(themeProvider!.isDark() ? Icons.light_mode : Icons.dark_mode),
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+          )
+        ],
+      ),
       body: _screens[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (index) {
           setState(() {
             _currentIndex = index;
           });
         },
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.directions_car), label: 'Vehicles'),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Analytics'),
-          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Service Centers'),
+        destinations: [
+          NavigationDestination(icon: Icon(Icons.dashboard_rounded), label: 'Home'),
+          NavigationDestination(icon: Icon(Icons.directions_car_rounded), label: 'Vehicles'),
+          NavigationDestination(icon: Icon(Icons.bar_chart_rounded), label: 'Expenses'),
+          NavigationDestination(icon: Icon(Icons.folder_shared_rounded), label: 'Docs'),
         ],
       ),
     );

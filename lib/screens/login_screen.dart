@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'main_screen.dart';
+import '../models/vehicle.dart';
+import '../models/reminder.dart';
+import '../models/expense.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -10,8 +13,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _login() {
+  void _login() async {
     if (_emailController.text.isNotEmpty && _passwordController.text.isNotEmpty) {
+      await VehicleRepository.loadVehicles();
+      await ReminderRepository.loadReminders();
+      await ExpenseRepository.loadExpenses();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MainScreen()),

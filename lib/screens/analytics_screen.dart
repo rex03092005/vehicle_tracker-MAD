@@ -1,56 +1,115 @@
 import 'package:flutter/material.dart';
+import '../models/expense.dart';
+import 'package:uuid/uuid.dart';
 
-class AnalyticsScreen extends StatelessWidget {
+class AnalyticsScreen extends StatefulWidget {
+  @override
+  _AnalyticsScreenState createState() => _AnalyticsScreenState();
+}
+
+class _AnalyticsScreenState extends State<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
+    final expenses = ExpenseRepository.expenses;
+    double total = expenses.fold(0, (sum, e) => sum + e.amount);
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Expense Analytics'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Maintenance Expenses (This Year)', style: Theme.of(context).textTheme.titleLarge),
+            Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  children: [
+                    Text('Total Expenses', style: Theme.of(context).textTheme.titleLarge),
+                    SizedBox(height: 10),
+                    Text('\$${total.toStringAsFixed(2)}', style: Theme.of(context).textTheme.displayMedium?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+            ),
             SizedBox(height: 20),
-            _buildExpenseBar('Oil Change', 120, Colors.orange),
-            SizedBox(height: 10),
-            _buildExpenseBar('General Servicing', 300, Colors.blue),
-            SizedBox(height: 10),
-            _buildExpenseBar('Insurance', 500, Colors.green),
-            SizedBox(height: 10),
-            _buildExpenseBar('Parts/Repairs', 150, Colors.red),
-            SizedBox(height: 30),
-            Text('Total: \$1070', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            Expanded(
+              child: expenses.isEmpty 
+                  ? Center(child: Text("No expenses logged yet."))
+                  : ListView.builder(
+                      itemCount: expenses.length,
+                      itemBuilder: (context, index) {
+                        final e = expenses[index];
+                        return Card(
+                          margin: EdgeInsets.only(bottom: 12),
+                          elevation: 2,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              child: Icon(Icons.attach_money),
+                            ),
+                            title: Text(e.category, style: TextStyle(fontWeight: FontWeight.bold)),
+                            subtitle: Text(e.date.toLocal().toString().split(' ')[0]),
+                            trailing: Text('\$${e.amount.toStringAsFixed(2)}', style: TextStyle(fontSize: 18, color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                          ),
+                        );
+                      },
+                    ),
+            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddExpenseDialog,
+        child: Icon(Icons.add),
       ),
     );
   }
 
-  Widget _buildExpenseBar(String label, double amount, Color color) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 2,
-          child: Text(label),
-        ),
-        Expanded(
-          flex: 5,
-          child: Container(
-            height: 20,
-            alignment: Alignment.centerRight,
-            padding: EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            width: amount,
-            child: Text('\$$amount', style: TextStyle(color: Colors.white, fontSize: 12)),
+  void _showAddExpenseDialog() {
+    String category = 'Servicing';
+    String amountStr = '';
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add Expense'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DropdownButtonFormField<String>(
+                value: category,
+                items: ['Servicing', 'Fuel', 'Insurance', 'Repairs'].map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
+                onChanged: (val) => category = val!,
+              ),
+              TextField(
+                decoration: InputDecoration(labelText: 'Amount (\$)'),
+                keyboardType: TextInputType.number,
+                onChanged: (val) => amountStr = val,
+              ),
+            ],
           ),
-        ),
-      ],
+          actions: [
+            TextButton(
+              onPressed: () async {
+                final double? amt = double.tryParse(amountStr);
+                if (amt != null && amt > 0) {
+                  await ExpenseRepository.addExpense(Expense(
+                    id: Uuid().v4(),
+                    category: category,
+                    amount: amt,
+                    date: DateTime.now(),
+                  ));
+                  setState(() {});
+                  Navigator.pop(context);
+                }
+              },
+              child: Text('Save'),
+            )
+          ],
+        );
+      }
     );
   }
 }
