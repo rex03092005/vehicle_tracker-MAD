@@ -73,6 +73,7 @@ class DashboardScreen extends StatelessWidget {
             crossAxisCount: 4,
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
+            childAspectRatio: 0.85,
             children: [
               _buildActionItem(context, Icons.add_circle, "Add Car", () {
                 Navigator.push(context, MaterialPageRoute(builder: (_) => AddVehicleScreen()));
