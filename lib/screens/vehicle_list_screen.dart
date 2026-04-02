@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/vehicle.dart';
 import 'add_vehicle_screen.dart';
+import 'reminders_screen.dart';
 
 class VehicleListScreen extends StatefulWidget {
   @override
@@ -27,7 +28,10 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                   title: Text(vehicle.name),
                   subtitle: Text('${vehicle.make} ${vehicle.model} - ${vehicle.licensePlate}'),
                   onTap: () {
-                    // Navigate to details/reminders later
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => RemindersScreen(vehicle: vehicle)),
+                    );
                   },
                 );
               },
