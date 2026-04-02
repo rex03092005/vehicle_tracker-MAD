@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/vehicle_list_screen.dart';
+import 'screens/main_screen.dart';
 
 void main() {
   runApp(VehicleTrackerApp());
@@ -13,7 +13,7 @@ class VehicleTrackerApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: VehicleListScreen(),
+      home: MainScreen(),
     );
   }
 }
