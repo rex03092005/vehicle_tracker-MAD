@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'core/theme/app_theme.dart';
-import 'core/router/app_router.dart';
+import 'screens/login_screen.dart';
+import 'utils/storage.dart';
+import 'utils/theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  // Register Hive adapters here when models are built
-
-  runApp(
-    ProviderScope(
-      child: AutoCareProApp(),
-    ),
-  );
+  await LocalStorage.init();
+  runApp(VehicleTrackerApp());
 }
 
-class AutoCareProApp extends ConsumerWidget {
+class VehicleTrackerApp extends StatefulWidget {
+  static _VehicleTrackerAppState? of(BuildContext context) => context.findAncestorStateOfType<_VehicleTrackerAppState>();
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.watch(appRouterProvider);
+  _VehicleTrackerAppState createState() => _VehicleTrackerAppState();
+}
 
-    return MaterialApp.router(
-      title: 'AutoCare Pro',
+class _VehicleTrackerAppState extends State<VehicleTrackerApp> {
+  bool _isDark = true;
+
+  void toggleTheme() {
+    setState(() { _isDark = !_isDark; });
+  }
+
+  bool isDark() => _isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'AutoCare Premium',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
-      themeMode: ThemeMode.system, // Later bound to a Provider for switching
-      routerConfig: router,
+      themeMode: _isDark ? ThemeMode.dark : ThemeMode.light,
+      home: LoginScreen(),
     );
   }
 }

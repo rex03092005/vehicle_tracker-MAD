@@ -55,4 +55,9 @@ class VehicleRepository {
     _vehicles.add(vehicle);
     await _saveVehicles();
   }
+
+  static Future<void> deleteVehicle(String id) async {
+    _vehicles.removeWhere((v) => v.id == id);
+    await _saveVehicles();
+  }
 }

@@ -3,6 +3,7 @@ import 'main_screen.dart';
 import '../models/vehicle.dart';
 import '../models/reminder.dart';
 import '../models/expense.dart';
+import '../models/fuel_log.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -18,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
       await VehicleRepository.loadVehicles();
       await ReminderRepository.loadReminders();
       await ExpenseRepository.loadExpenses();
+      await FuelRepository.loadFuelLogs();
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MainScreen()),

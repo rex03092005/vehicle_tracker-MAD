@@ -8,11 +8,6 @@ class AppTheme {
       colorSchemeSeed: Colors.indigo,
       brightness: Brightness.light,
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme),
-      scaffoldBackgroundColor: Color(0xFFF7F8FA),
-      cardTheme: CardTheme(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      ),
     );
   }
 
@@ -21,11 +16,6 @@ class AppTheme {
       useMaterial3: true,
       colorSchemeSeed: Colors.indigo,
       brightness: Brightness.dark,
-      textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme),
-      cardTheme: CardTheme(
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      ),
     );
   }
 }
