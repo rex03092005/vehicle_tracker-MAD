@@ -29,7 +29,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
                 return ListTile(
                   leading: Icon(Icons.notifications_active),
                   title: Text(reminder.title),
-                  subtitle: Text('Due: \${reminder.dueDate.toLocal().toString().split(' ')[0]} - \${reminder.type}'),
+                  subtitle: Text("Due: ${reminder.dueDate.toLocal().toString().split(' ')[0]} - ${reminder.type}"),
                 );
               },
             ),

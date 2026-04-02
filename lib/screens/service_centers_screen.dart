@@ -20,10 +20,10 @@ class ServiceCentersScreen extends StatelessWidget {
           return ListTile(
             leading: Icon(Icons.build_circle, size: 40, color: Colors.blueGrey),
             title: Text(center['name']!),
-            subtitle: Text('\${center['distance']} | Rating: \${center['rating']}'),
+            subtitle: Text("${center['distance']} | Rating: ${center['rating']}"),
             trailing: ElevatedButton(
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Appointment booked at \${center['name']}!')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Appointment booked at ${center['name']}!")));
               },
               child: Text('Book'),
             ),
