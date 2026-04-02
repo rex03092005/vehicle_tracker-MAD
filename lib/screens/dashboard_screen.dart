@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models/vehicle.dart';
 import '../models/reminder.dart';
+import 'add_vehicle_screen.dart';
+import 'service_centers_screen.dart';
+import 'analytics_screen.dart';
+import 'fuel_tracker_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   @override
@@ -70,10 +74,18 @@ class DashboardScreen extends StatelessWidget {
             shrinkWrap: true,
             physics: NeverScrollableScrollPhysics(),
             children: [
-              _buildActionItem(context, Icons.add_circle, "Add Car"),
-              _buildActionItem(context, Icons.build_circle, "Book\nService"),
-              _buildActionItem(context, Icons.monetization_on, "Expenses"),
-              _buildActionItem(context, Icons.local_gas_station, "Fuel Log"),
+              _buildActionItem(context, Icons.add_circle, "Add Car", () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => AddVehicleScreen()));
+              }),
+              _buildActionItem(context, Icons.build_circle, "Book\nService", () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => ServiceCentersScreen()));
+              }),
+              _buildActionItem(context, Icons.monetization_on, "Expenses", () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => AnalyticsScreen()));
+              }),
+              _buildActionItem(context, Icons.local_gas_station, "Fuel Log", () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => FuelTrackerScreen()));
+              }),
             ],
           ),
           
@@ -133,18 +145,22 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionItem(BuildContext context, IconData icon, String label) {
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 28,
-          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-          foregroundColor: Theme.of(context).colorScheme.primary,
-          child: Icon(icon, size: 28),
-        ),
-        SizedBox(height: 8),
-        Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500), textAlign: TextAlign.center, maxLines: 2),
-      ],
+  Widget _buildActionItem(BuildContext context, IconData icon, String label, VoidCallback onTap) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 28,
+            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            foregroundColor: Theme.of(context).colorScheme.primary,
+            child: Icon(icon, size: 28),
+          ),
+          SizedBox(height: 8),
+          Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w500), textAlign: TextAlign.center, maxLines: 2),
+        ],
+      ),
     );
   }
 }

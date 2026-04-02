@@ -4,6 +4,7 @@ class FuelTrackerScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(title: Text("Fuel Economy Tracker")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

@@ -14,6 +14,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     double total = expenses.fold(0, (sum, e) => sum + e.amount);
 
     return Scaffold(
+      appBar: Navigator.canPop(context) ? AppBar(title: Text("Expenses")) : null,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
