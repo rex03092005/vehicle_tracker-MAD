@@ -34,7 +34,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16),
+            if (expenses.isNotEmpty) _buildChart(expenses),
             Expanded(
               child: expenses.isEmpty 
                   ? Center(child: Text("No expenses logged yet."))
@@ -64,6 +65,57 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: _showAddExpenseDialog,
         child: Icon(Icons.add),
+      ),
+    );
+  }
+
+  Widget _buildChart(List<Expense> expenses) {
+    Map<String, double> categoryMap = {};
+    for (var e in expenses) {
+      categoryMap[e.category] = (categoryMap[e.category] ?? 0) + e.amount;
+    }
+
+    double maxVal = categoryMap.values.isEmpty ? 1 : categoryMap.values.reduce((a, b) => a > b ? a : b);
+    if (maxVal == 0) maxVal = 1;
+
+    return Container(
+      height: 200,
+      padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 16),
+      margin: EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10),
+        ]
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: categoryMap.entries.map((entry) {
+          final heightFactor = entry.value / maxVal;
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text('\$${entry.value.toInt()}', style: TextStyle(fontSize: 10, color: Colors.grey[600], fontWeight: FontWeight.bold)),
+              SizedBox(height: 6),
+              Container(
+                width: 32,
+                height: 110 * heightFactor,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.indigo, Colors.lightBlueAccent],
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                  ),
+                  borderRadius: BorderRadius.circular(6),
+                ),
+              ),
+              SizedBox(height: 8),
+              Text(entry.key, style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+            ],
+          );
+        }).toList(),
       ),
     );
   }
