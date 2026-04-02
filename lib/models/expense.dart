@@ -35,5 +35,10 @@ class ExpenseRepository {
     await _saveExpenses();
   }
 
+  static Future<void> deleteExpense(String id) async {
+    _expenses.removeWhere((e) => e.id == id);
+    await _saveExpenses();
+  }
+
   static List<Expense> get expenses => _expenses;
 }

@@ -21,53 +21,72 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
               itemCount: vehicles.length,
               itemBuilder: (context, index) {
                 final vehicle = vehicles[index];
-                return Card(
-                  margin: EdgeInsets.only(bottom: 16),
-                  elevation: 6,
-                  shadowColor: Colors.black12,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(20),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => RemindersScreen(vehicle: vehicle)),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primaryContainer,
-                              borderRadius: BorderRadius.circular(16),
+                return Dismissible(
+                  key: Key(vehicle.id),
+                  direction: DismissDirection.endToStart,
+                  background: Container(
+                    margin: EdgeInsets.only(bottom: 16),
+                    padding: EdgeInsets.only(right: 24),
+                    alignment: Alignment.centerRight,
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Icon(Icons.delete_outline, color: Colors.white, size: 36),
+                  ),
+                  onDismissed: (direction) async {
+                    await VehicleRepository.deleteVehicle(vehicle.id);
+                    setState(() {});
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Vehicle deleted.'), behavior: SnackBarBehavior.floating));
+                  },
+                  child: Card(
+                    margin: EdgeInsets.only(bottom: 16),
+                    elevation: 6,
+                    shadowColor: Colors.black12,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => RemindersScreen(vehicle: vehicle)),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(20.0),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primaryContainer,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              child: Icon(Icons.directions_car_filled, size: 40, color: Theme.of(context).colorScheme.onPrimaryContainer),
                             ),
-                            child: Icon(Icons.directions_car_filled, size: 40, color: Theme.of(context).colorScheme.onPrimaryContainer),
-                          ),
-                          SizedBox(width: 20),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(vehicle.name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                                SizedBox(height: 6),
-                                Text('${vehicle.make} ${vehicle.model}', style: TextStyle(color: Colors.grey[600], fontSize: 16)),
-                                SizedBox(height: 8),
-                                Container(
-                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                                  decoration: BoxDecoration(
-                                    color: Colors.amberAccent[100],
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Text(vehicle.licensePlate, style: TextStyle(fontWeight: FontWeight.w800, color: Colors.orange[900], letterSpacing: 1.5)),
-                                )
-                              ],
+                            SizedBox(width: 20),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(vehicle.name, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                  SizedBox(height: 6),
+                                  Text('${vehicle.make} ${vehicle.model}', style: TextStyle(color: Colors.grey[600], fontSize: 16)),
+                                  SizedBox(height: 8),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.amberAccent[100],
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Text(vehicle.licensePlate, style: TextStyle(fontWeight: FontWeight.w800, color: Colors.orange[900], letterSpacing: 1.5)),
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          Icon(Icons.chevron_right, color: Colors.grey),
-                        ],
+                            Icon(Icons.chevron_right, color: Colors.grey),
+                          ],
+                        ),
                       ),
                     ),
                   ),

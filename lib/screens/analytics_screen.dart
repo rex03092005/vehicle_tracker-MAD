@@ -43,17 +43,36 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       itemCount: expenses.length,
                       itemBuilder: (context, index) {
                         final e = expenses[index];
-                        return Card(
-                          margin: EdgeInsets.only(bottom: 12),
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          child: ListTile(
-                            leading: CircleAvatar(
-                              child: Icon(Icons.attach_money),
+                        return Dismissible(
+                          key: Key(e.id),
+                          direction: DismissDirection.endToStart,
+                          background: Container(
+                            margin: EdgeInsets.only(bottom: 12),
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.symmetric(horizontal: 20),
+                            decoration: BoxDecoration(
+                              color: Colors.redAccent,
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                            title: Text(e.category, style: TextStyle(fontWeight: FontWeight.bold)),
-                            subtitle: Text(e.date.toLocal().toString().split(' ')[0]),
-                            trailing: Text('\$${e.amount.toStringAsFixed(2)}', style: TextStyle(fontSize: 18, color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                            child: Icon(Icons.delete_outline, color: Colors.white, size: 28),
+                          ),
+                          onDismissed: (direction) async {
+                            await ExpenseRepository.deleteExpense(e.id);
+                            setState(() {});
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Expense deleted.'), behavior: SnackBarBehavior.floating));
+                          },
+                          child: Card(
+                            margin: EdgeInsets.only(bottom: 12),
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                child: Icon(Icons.attach_money),
+                              ),
+                              title: Text(e.category, style: TextStyle(fontWeight: FontWeight.bold)),
+                              subtitle: Text(e.date.toLocal().toString().split(' ')[0]),
+                              trailing: Text('\$${e.amount.toStringAsFixed(2)}', style: TextStyle(fontSize: 18, color: Colors.redAccent, fontWeight: FontWeight.bold)),
+                            ),
                           ),
                         );
                       },
